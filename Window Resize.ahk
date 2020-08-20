@@ -1,283 +1,300 @@
 ;	[! alt]    [^ ctrl]    [+ shift]    [$ raw]
 
 #singleinstance force
-menu, tray, icon, shell32.dll, 35
+Menu, tray, icon, shell32.dll, 35
+CoordMode, ToolTip, Window
+CoordMode, Mouse, Screen
 
-global mwl			;	monitor working area left
-global mwt			;	monitor working area top
-global mwr			;	monitor working area right
-global mwb			;	monitor working area bottom
-global mw			;	monitor width
-global mh			;	monitor height
-global b			;	border section size
-global s			;	sizable section size
-global m			;	margin
-global rw := 14		;	ratio width
-global rh := 9		;	ratio height
+Global MWL			; Monitor working area left
+Global MWT			; Monitor working area top
+Global MWR			; Monitor working area right
+Global MWB			; Monitor working area bottom
+Global MWW			; Monitor working width
+Global MWH			; Monitor working height
+Global MDS := 30	; Margin default size
+Global M := MDS		; Margin
+Global RW := 14		; Ratio width
+Global RH := 9		; Ratio height
 
-rcontrol & ralt::send, +{f10}			;	right click
-#^down::winminimize, a					;	minimize
+^#!Delete::Run, *RunAs "C:\Program Files Portable\AHK\Window Resize.ahk"
 
-+scrolllock::send, #!{Numpad5}			;	obs mute mic
-+pause::send, #!{Numpad8}#!{Numpad9}	;	obs show fg image
-scrolllock::send, #!{NumpadDiv}			;	discord mute mic
-pause::send, #!{NumpadMult}				;	discord show overlay
+#RButton::ShowMenu(True, True)
+#^RButton::ShowMenu(False, True)
+#<!Space::ShowMenu(True, False)
+#<!^Space::ShowMenu(False, False)
 
-#rbutton::showmenu(true, true)
-#^rbutton::showmenu(false, true)
-#<!space::showmenu(true, false)
-#<!^space::showmenu(false, false)
+#>^Space::Run, "c:\program files\autohotkey\windowspy.ahk"
+#>^Escape::Suspend
 
-#>^space::run, "c:\program files\autohotkey\windowspy.ahk"
-#>!space::suspend
+#F1::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s1()
+#F2::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s2()
+#F3::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s3()
+#F4::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) center()
 
 s1() {
-	winrestore, a
-	winmove, a,, realx(mwl) + m
-				  , mwt + m
-				  , realw(mw * 0.6)
-				  , realh(((mw * 0.6) / rw) * rh)
+	exact(M, M, Floor(1366 * 0.6), Floor((1366 * 0.6) / RW) * RH)
 }
 s2() {
-	winrestore, a
-	winmove, a,, realx(mwl) + m
-				  , mwt + m
-				  , realw(mw * 0.65)
-				  , realh(((mw * 0.65) / rw) * rh)
+	exact(M, M, Floor(1366 * 0.65), Floor((1366 * 0.65) / RW) * RH)
 }
 s3() {
-	winrestore, a
-	winmove, a,, realx(mwl) + m
-				  , mwt + m
-				  , realw(mw * 0.7)
-				  , realh(((mw * 0.7) / rw) * rh)
+	exact(M, M, Floor(1366 * 0.7), Floor((1366 * 0.7) / RW) * RH)
+}
+exact(X, Y, W, H) {
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + X)
+		   , MWT + Y
+		   , RealW(W)
+		   , RealH(H)
 }
 center() {
-	winrestore, a
-	wingetpos, x, y, w, h, a
-	winmove, a,, mwl + ((mw - w) / 2)
-			   , mwt + ((mh - h) / 2)
+	WinRestore, a
+	WinGetPos, x, y, w, h, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + Floor((MWW - w) / 2))
+		   , MWT + Floor((MWH - h) / 2)
 }
 
 l25() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, realx(mwl) + m
-				  , mwt + m
-				  , realw(floor(mw * 0.25)) - m
-				  , realh(mh) - m - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , MWT + M
+		   , RealW(Floor(MWW * 0.25) - M)
+		   , RealH(MWH - (M * 2))
 }
 l75() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, realx(mwl) + m
-				  , mwt + m
-				  , realw(mw - floor(mw * 0.25)) - m - m
-				  , realh(mh) - m - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , MWT + M
+		   , RealW(Floor(MWW * 0.75) - (M * 2))
+		   , RealH(MWH - (M * 2))
 }
 
 r25() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, ;realx(mwr - floor(mw * 0.25))
-				  , mwt + m
-				  , realw(floor(mw * 0.25)) - m
-				  , realh(mh) - m - m
-	wingetpos,,, w,, %at%
-	winmove, %at%,, mwr - w + s - b - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(Floor(MWW * 0.75))
+		   , MWT + M
+		   , RealW(Floor(MWW * 0.25) - M)
+		   , RealH(MWH - (M * 2))
 }
 r75() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, ;mwl + realx(floor(mw * 0.25)) + m
-				  , mwt + m
-				  , realw(mw - floor(mw * 0.25)) - m - m
-				  , realh(mh) - m - m
-	wingetpos,,, w,, %at%
-	winmove, %at%,, mwr - w + s - b - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(Floor(MWW * 0.25) + M)
+		   , MWT + M
+		   , RealW(Floor(MWW * 0.75) - (M * 2))
+		   , RealH(MWH - (M * 2))
 }
 
 t40() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, realx(mwl) + m
-				  , mwt + m
-				  , realw(mw) - m - m
-				  , realh(floor(mh * 0.4)) - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , MWT + M
+		   , RealW(MWW - (M * 2))
+		   , RealH(Floor(MWH * 0.4) - M)
 }
 t60() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, realx(mwl) + m
-				  , mwt + m
-				  , realw(mw) - m - m
-				  , realh(mh - floor(mh * 0.4)) - m - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , MWT + M
+		   , RealW(MWW - (M * 2))
+		   , RealH(Floor(MWH * 0.6) - (M * 2))
 }
 
 b40() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, realx(mwl) + m
-				  , ;mwb - floor(mh * 0.4)
-				  , realw(mw) - m - m
-				  , realh(floor(mh * 0.4)) - m
-	wingetpos,,,, h, %at%
-	winmove, %at%,,, mwb - h + s - b - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , Floor(MWH * 0.6)
+		   , RealW(MWW - (M * 2))
+		   , RealH(Floor(MWH * 0.4) - M)
 }
 b60() {
-	wingetactivetitle, at
-	winrestore, %at%
-	winmove, %at%,, realx(mwl) + m
-				  , ;mwt + floor(mh * 0.4) + m
-				  , realw(mw) - m - m
-				  , realh(mh - floor(mh * 0.4)) - m - m
-	wingetpos,,,, h,, %at%
-	winmove, %at%,,, mwb - h + s - b - m
+	WinRestore, a
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , Floor(MWH * 0.4) + M
+		   , RealW(MWW - (M * 2))
+		   , RealH(Floor(MWH * 0.6) - (M * 2))
 }
 
-getmonitorinfo() {
-	wingetactivetitle, at
-	winhandle := winexist(at)
-	varsetcapacity(monitorinfo, 40), numput(40, monitorinfo)
+GetMonitorRect(ByRef ML, ByRef MT, ByRef MR, ByRef MB, ByRef MW, ByRef MH) {
+	WinGetActiveTitle, at
+	WinHandle := WinExist(at)
+	VarSetCapacity(MonitorInfo, 40), NumPut(40, MonitorInfo)
 
-	if (monitorhandle		:= dllcall("MonitorFromWindow", "Ptr", winHandle, "UInt", 0x2)) && DllCall("GetMonitorInfo", "Ptr", monitorHandle, "Ptr", &monitorInfo) {
-		; monitor left		:= numget(monitorInfo,  4, "int")
-		; monitor top		:= numget(monitorInfo,  8, "int")
-		; monitor right		:= numget(monitorInfo, 12, "int")
-		; monitor bottom	:= NumGet(monitorInfo, 16, "int")
-		mwl					:= numget(monitorInfo, 20, "int")
-		mwt					:= numget(monitorInfo, 24, "int")
-		mwr					:= numget(monitorInfo, 28, "int")
-		mwb					:= numget(monitorInfo, 32, "int")
-		; is  monitor primary	:= numget(monitorInfo, 36, "int") & 1
+	IF (MonitorHandle		:= DllCall("MonitorFromWindow", "Ptr", WinHandle, "UInt", 0x2)) && DllCall("GetMonitorInfo", "Ptr", MonitorHandle, "Ptr", &MonitorInfo) {
+		ML := NumGet(MonitorInfo, 20, "Int")
+		MT := NumGet(MonitorInfo, 24, "Int")
+		MR := NumGet(MonitorInfo, 28, "Int")
+		MB := NumGet(MonitorInfo, 32, "Int")
 	}
 	
-	mw := mwr - mwl
-	mh := mwb - mwt
-
-	sysget, b, 5
-	sysget, s, 32
+	MW := MR - ML
+	MH := MB - MT
 }
 
-getclientrect(){
-	wingetactivetitle, at
-	winhandle := winexist(at)
-	
-	WinGetPos, Win_X, Win_Y, Win_W, Win_H, a
+GetMonitorRectFromCursor(ByRef ML, ByRef MT, ByRef MR, ByRef MB, ByRef MW, ByRef MH) {
+	SysGet, mc, MonitorCount
 
+	Loop, %mc% {
+		SysGet, md, Monitor, %A_Index%]
+		MouseGetPos, mx, my
+		IF (mdLeft < mx AND mdRight > mx AND mdTop < my AND mdBottom > my) {
+			ML := mdLeft
+			MT := mdTop
+			MR := mdRight
+			MB := mdBottom
+			MW := MR - ML
+			MH := MB - MT
+			Break
+		}
+	}
+}
+
+GetClientRect(ByRef CX, ByRef CY, ByRef CW, ByRef CH) {
+	WinGetActiveTitle, at
+	WinHandle := WinExist(at)
 	VarSetCapacity(RECT, 16, 0)
-	DllCall("user32\GetClientRect", Ptr, winHandle, Ptr,&RECT)
-	DllCall("user32\ClientToScreen", Ptr, winHandle, Ptr,&RECT)
-	Win_Client_X := NumGet(&RECT, 0, "Int")
-	Win_Client_Y := NumGet(&RECT, 4, "Int")
-	Win_Client_W := NumGet(&RECT, 8, "Int")
-	Win_Client_H := NumGet(&RECT, 12, "Int")
-
-	msgbox, % ""
-	. Win_X " - " Win_y " - " Win_w " - " Win_h    "`r`n"
-	. "`r`n"
-	. Win_Client_X " - " Win_Client_y " - " Win_Client_w " - " Win_Client_h    "`r`n"
+	DllCall("user32\GetClientRect", Ptr, WinHandle, Ptr, &RECT)
+	DllCall("user32\ClientToScreen", Ptr, WinHandle, Ptr, &RECT)
+	CX := NumGet(&RECT, 0, "Int")
+	CY := NumGet(&RECT, 4, "Int")
+	CW := NumGet(&RECT, 8, "Int")
+	CH := NumGet(&RECT, 12, "Int")
 }
 
-initializecomponents() {
-	menu, menu, add
-	menu, menu, deleteall
+InitializeComponents() {
+	Menu, Menu, Add
+	Menu, Menu, DeleteAll
 
-	menu, preset, add, size 1, menuhandler
-	menu, preset, add, size 2, menuhandler
-	menu, preset, add, size 3, menuhandler
-	menu, preset, add, center, menuhandler
-	menu, menu, add, preset, :preset
+	Menu, preset, Add, size 1, MenuHandler
+	Menu, preset, Add, size 2, MenuHandler
+	Menu, preset, Add, size 3, MenuHandler
+	Menu, preset, Add, center, MenuHandler
+	Menu, Menu, Add, preset, :preset
 
-	menu, menu, add
+	Menu, Menu, Add
 
-	menu, left, add, 25`%, menuhandler
-	menu, left, add, 75`%, menuhandler
-	menu, menu, add, left, :left
+	Menu, left, Add, 25`%, MenuHandler
+	Menu, left, Add, 75`%, MenuHandler
+	Menu, Menu, Add, left, :left
 
-	menu, right, add, 25`%, menuhandler
-	menu, right, add, 75`%, menuhandler
-	menu, menu, add, right, :right
+	Menu, right, Add, 25`%, MenuHandler
+	Menu, right, Add, 75`%, MenuHandler
+	Menu, Menu, Add, right, :right
 
-	menu, top, add, 40`%, menuhandler
-	menu, top, add, 60`%, menuhandler
-	menu, menu, add, top, :top
+	Menu, top, Add, 40`%, MenuHandler
+	Menu, top, Add, 60`%, MenuHandler
+	Menu, Menu, Add, top, :top
 
-	menu, bottom, add, 40`%, menuhandler
-	menu, bottom, add, 60`%, menuhandler
-	menu, menu, add, bottom, :bottom
+	Menu, bottom, Add, 40`%, MenuHandler
+	Menu, bottom, Add, 60`%, MenuHandler
+	Menu, Menu, Add, bottom, :bottom
 }
 
-showmenu(ismargin, oncursor) {
-	if winactive("ahk_class Shell_TrayWnd") or winactive("ahk_exe SearchUI.exe") or winactive("ahk_class Windows.UI.Core.CoreWindow"){
-	} else {
-		getmonitorinfo()
+ShowMenu(isMargin, onCursor) {
+	IF IsNotExplorer() {
+		GetMonitorRect(MWL, MWT, MWR, MWB, MWW, MWH)
+		InitializeComponents()
 
-		if (ismargin) {
-			m := mw / 48
-		} else {
-			m := 0
+		IF (isMargin) {
+			M := MDS
+		} ELSE {
+			M := 0
 		}
 
-		initializecomponents()
-
-		if (oncursor) {
-			menu, menu, show
-		} else {
-			menu, menu, show, 0, 0
+		IF (onCursor) {
+			Menu, Menu, show
+		} ELSE {
+			Menu, Menu, show, 0, 0
 		}
 	}
+
+	M := MDS
 }
 
-menuhandler() {
-	if (a_thismenu == "preset") {
-		if (a_thismenuitem == "size 1") {
+MenuHandler() {
+	IF (a_thismenu == "preset") {
+		IF (a_thismenuitem == "size 1") {
 			s1()
-		} else if (a_thismenuitem == "size 2"){
+		} ELSE IF (a_thismenuitem == "size 2"){
 			s2()
-		} else if (a_thismenuitem == "size 3") {
+		} ELSE IF (a_thismenuitem == "size 3") {
 			s3()
-		} else if (a_thismenuitem == "center") {
+		} ELSE IF (a_thismenuitem == "center") {
 			center()
 		}
-	} else if (a_thismenu == "left") {
-		if (a_thismenuitem == "25%") {
+	} ELSE IF (a_thismenu == "left") {
+		IF (a_thismenuitem == "25%") {
 			l25()
-		} else if (a_thismenuitem == "75%") {
+		} ELSE IF (a_thismenuitem == "75%") {
 			l75()
 		}
-	} else if (a_thismenu == "right") {
-		if (a_thismenuitem == "25%") {
+	} ELSE IF (a_thismenu == "right") {
+		IF (a_thismenuitem == "25%") {
 			r25()
-		} else if (a_thismenuitem == "75%") {
+		} ELSE IF (a_thismenuitem == "75%") {
 			r75()
 		}
-	} else if (a_thismenu == "top") {
-		if (a_thismenuitem == "40%") {
+	} ELSE IF (a_thismenu == "top") {
+		IF (a_thismenuitem == "40%") {
 			t40()
-		} else if (a_thismenuitem == "60%") {
+		} ELSE IF (a_thismenuitem == "60%") {
 			t60()
 		}
-	} else if (a_thismenu == "bottom") {
-		if (a_thismenuitem == "40%") {
+	} ELSE IF (a_thismenu == "bottom") {
+		IF (a_thismenuitem == "40%") {
 			b40()
-		} else if (a_thismenuitem == "60%") {
+		} ELSE IF (a_thismenuitem == "60%") {
 			b60()
 		}
 	}
 }
 
-realx(x) {
-	getmonitorinfo()
-	return x - s + b
+IsNotExplorer() {
+	IF winactive("ahk_class Shell_TrayWnd") OR winactive("ahk_exe SearchUI.exe") OR winactive("ahk_class Windows.UI.Core.CoreWindow"){
+		Return False
+	}
+	ELSE {
+		Return True
+	}
 }
 
-realw(w) {
-	getmonitorinfo()
-	return w + s + s - b - b
+RealX(x) {
+	WinGetPos, wx, wy, ww, wh, a
+	GetClientRect(cx, cy, cw, ch)
+	Return x + ((cw - ww) / 2)
 }
 
-realh(h) {
-	getmonitorinfo()
-	return h + s - b
+RealY(y) {
+	Return y
+}
+
+RealW(w) {
+	WinGetPos, wx, wy, ww, wh, a
+	GetClientRect(cx, cy, cw, ch)
+	Return w - (cw - ww)
+}
+
+RealH(h) {
+	WinGetPos, wx, wy, ww, wh, a
+	GetClientRect(cx, cy, cw, ch)
+	Return h - (ch - wh)
 }
