@@ -26,10 +26,24 @@ Global RH := 9		; Ratio height
 #>^Space::Run, "c:\program files\autohotkey\windowspy.ahk"
 #>^Escape::Suspend
 
-#F1::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s1()
-#F2::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s2()
-#F3::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s3()
-#F4::GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) center()
+;;;
+#F1::
+	If IsNotExplorer() {
+		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s1()
+	}
+#F2::
+	If IsNotExplorer() {
+		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s2()
+	}
+#F3::
+	If IsNotExplorer() {
+		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s3()
+	}
+#F4::
+	If IsNotExplorer() {
+		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) center()
+	}
+;;;
 
 s1() {
 	exact(M, M, Floor(1366 * 0.6), Floor((1366 * 0.6) / RW) * RH)
