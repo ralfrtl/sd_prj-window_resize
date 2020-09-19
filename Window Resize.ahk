@@ -1,7 +1,7 @@
 ;	[! alt]    [^ ctrl]    [+ shift]    [$ raw]
 
 #singleinstance force
-Menu, tray, icon, shell32.dll, 35
+Menu, tray, icon, ddores.dll, 100
 CoordMode, ToolTip, Window
 CoordMode, Mouse, Screen
 
@@ -81,19 +81,29 @@ r25() {
 	WinRestore, a
 	WinMove, a
 		   ,
-		   , RealX(Floor(MWW * 0.75))
-		   , MWT + M
+		   ,
+		   ,
 		   , RealW(Floor(MWW * 0.25) - M)
 		   , RealH(MWH - (M * 2))
+	GetClientRect(x,y,w,h)
+	WinMove, a
+		   ,
+		   , RealX(MWR - w - M)
+		   , MWT + M
 }
 r75() {
 	WinRestore, a
 	WinMove, a
 		   ,
-		   , RealX(Floor(MWW * 0.25) + M)
-		   , MWT + M
+		   ,
+		   ,
 		   , RealW(Floor(MWW * 0.75) - (M * 2))
 		   , RealH(MWH - (M * 2))
+	GetClientRect(x,y,w,h)
+	WinMove, a
+		   ,
+		   , RealX(MWR - w - M)
+		   , MWT + M
 }
 
 t40() {
@@ -119,19 +129,29 @@ b40() {
 	WinRestore, a
 	WinMove, a
 		   ,
-		   , RealX(MWL + M)
-		   , Floor(MWH * 0.6)
+		   ,
+		   ,
 		   , RealW(MWW - (M * 2))
 		   , RealH(Floor(MWH * 0.4) - M)
+	GetClientRect(x,y,w,h)
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , MWB - h - M
 }
 b60() {
 	WinRestore, a
 	WinMove, a
 		   ,
-		   , RealX(MWL + M)
-		   , Floor(MWH * 0.4) + M
+		   ,
+		   ,
 		   , RealW(MWW - (M * 2))
 		   , RealH(Floor(MWH * 0.6) - (M * 2))
+	GetClientRect(x,y,w,h)
+	WinMove, a
+		   ,
+		   , RealX(MWL + M)
+		   , MWB - h - M
 }
 
 GetMonitorRect(ByRef ML, ByRef MT, ByRef MR, ByRef MB, ByRef MW, ByRef MH) {
@@ -148,19 +168,22 @@ GetMonitorRect(ByRef ML, ByRef MT, ByRef MR, ByRef MB, ByRef MW, ByRef MH) {
 	
 	MW := MR - ML
 	MH := MB - MT
+
+	;MsgBox, % ML " " MT " " MR " " MB " "
 }
 
 GetMonitorRectFromCursor(ByRef ML, ByRef MT, ByRef MR, ByRef MB, ByRef MW, ByRef MH) {
 	SysGet, mc, MonitorCount
 
 	Loop, %mc% {
-		SysGet, md, Monitor, %A_Index%]
+		SysGet, mn, Monitor, %A_Index%
 		MouseGetPos, mx, my
-		IF (mdLeft < mx AND mdRight > mx AND mdTop < my AND mdBottom > my) {
-			ML := mdLeft
-			MT := mdTop
-			MR := mdRight
-			MB := mdBottom
+		IF (mnLeft < mx AND mnRight > mx AND mnTop < my AND mnBottom > my) {
+			SysGet, mi, MonitorWorkArea, %A_Index%
+			ML := miLeft
+			MT := miTop
+			MR := miRight
+			MB := miBottom
 			MW := MR - ML
 			MH := MB - MT
 			Break
@@ -211,7 +234,6 @@ InitializeComponents() {
 
 ShowMenu(isMargin, onCursor) {
 	IF IsNotExplorer() {
-		GetMonitorRect(MWL, MWT, MWR, MWB, MWW, MWH)
 		InitializeComponents()
 
 		IF (isMargin) {
@@ -221,8 +243,10 @@ ShowMenu(isMargin, onCursor) {
 		}
 
 		IF (onCursor) {
+			GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH)
 			Menu, Menu, show
 		} ELSE {
+			GetMonitorRect(MWL, MWT, MWR, MWB, MWW, MWH)
 			Menu, Menu, show, 0, 0
 		}
 	}
@@ -269,7 +293,7 @@ MenuHandler() {
 }
 
 IsNotExplorer() {
-	IF winactive("ahk_class Shell_TrayWnd") OR winactive("ahk_exe SearchUI.exe") OR winactive("ahk_class Windows.UI.Core.CoreWindow"){
+	IF WinActive("ahk_class Shell_TrayWnd") OR WinActive("ahk_class WorkerW") OR WinActive("ahk_class NotifyIconOverflowWindow") OR WinActive("ahk_exe SearchUI.exe") OR WinActive("ahk_class Windows.UI.Core.CoreWindow") {
 		Return False
 	}
 	ELSE {
