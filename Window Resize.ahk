@@ -23,26 +23,44 @@ Global RH := 9		; Ratio height
 #<!Space::ShowMenu(True, False)
 #<!^Space::ShowMenu(False, False)
 
-#>^Space::Run, "c:\program files\autohotkey\windowspy.ahk"
-#>^Escape::Suspend
+;#>^Space::Run, "c:\program files\autohotkey\windowspy.ahk"
+;#>^Escape::Suspend
+
+; Immedietly maximize a minimized window
+#^Up::
+	if IsNotExplorer() {
+		WinMaximize, a
+	}
+	Return
+
+; Immedietly minimize a maximized window
+#^Down::
+	if IsNotExplorer() {
+		WinMinimize, a
+	}
+	Return
 
 ;;;
 #F1::
 	If IsNotExplorer() {
 		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s1()
 	}
+    Return
 #F2::
 	If IsNotExplorer() {
 		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s2()
 	}
+    Return
 #F3::
 	If IsNotExplorer() {
 		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) s3()
 	}
+    Return
 #F4::
 	If IsNotExplorer() {
 		GetMonitorRectFromCursor(MWL, MWT, MWR, MWB, MWW, MWH) center()
 	}
+    Return
 ;;;
 
 s1() {
