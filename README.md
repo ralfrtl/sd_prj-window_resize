@@ -18,5 +18,6 @@ Script for resizing and moving windows applications
 |  `win` `F4` | Center a window in your screen |
 | `win` `left ctrl` `down up` | Immidietly maximize the last window on focus (sometimes this doesn't work xD) |
 | `win` `left ctrl` `down arrow` | Immidietly minimize a maximized window |
+| `left ctrl` `win` `alt` `delete` | Run this as admin |
 
 > Note: Inculding `left ctrl` while performing the keybinds to show the context menu will activate a feature that neglects the assigned margin (30px) and will resize or move the windows right at the edge of the screen or other windows. 
