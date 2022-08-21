@@ -239,29 +239,36 @@ InitializeComponents() {
 	Menu, Menu, Add
 	Menu, Menu, DeleteAll
 
-	Menu, preset, Add, size 1, MenuHandler
-	Menu, preset, Add, size 2, MenuHandler
-	Menu, preset, Add, size 3, MenuHandler
-	Menu, preset, Add, center, MenuHandler
-	Menu, Menu, Add, preset, :preset
+	Menu, preset, Add, Size 1, MenuHandler
+	Menu, preset, Add, Size 2, MenuHandler
+	Menu, preset, Add, Size 3, MenuHandler
+	Menu, preset, Add, Center, MenuHandler
+	Menu, Menu, Add, Preset, :preset
 
 	Menu, Menu, Add
 
 	Menu, left, Add, 25`%, MenuHandler
 	Menu, left, Add, 75`%, MenuHandler
-	Menu, Menu, Add, left, :left
+	Menu, Menu, Add, Left, :left
 
 	Menu, right, Add, 25`%, MenuHandler
 	Menu, right, Add, 75`%, MenuHandler
-	Menu, Menu, Add, right, :right
+	Menu, Menu, Add, Right, :right
 
 	Menu, top, Add, 40`%, MenuHandler
 	Menu, top, Add, 60`%, MenuHandler
-	Menu, Menu, Add, top, :top
+	Menu, Menu, Add, Top, :top
 
 	Menu, bottom, Add, 40`%, MenuHandler
 	Menu, bottom, Add, 60`%, MenuHandler
-	Menu, Menu, Add, bottom, :bottom
+	Menu, Menu, Add, Bottom, :bottom
+
+	Menu, Menu, Add
+
+	Menu, Menu, Add, Always on top, MenuHandler
+
+	Menu, Menu, Add, Remove border, MenuHandler
+	Menu, Menu, Add, Show border, MenuHandler
 }
 
 ShowMenu(isMargin, onCursor) {
@@ -287,14 +294,22 @@ ShowMenu(isMargin, onCursor) {
 }
 
 MenuHandler() {
-	IF (a_thismenu == "preset") {
-		IF (a_thismenuitem == "size 1") {
+	IF (a_thismenuitem == "Always on top") {
+		Winset, Alwaysontop, , a
+	} ELSE IF (a_thismenuitem == "Remove border") {
+		WinSet, Style, -0x40000, A
+		WinSet, Style, -0xC00000, A
+	} ELSE IF (a_thismenuitem == "Show border") {
+		WinSet, Style, +0x40000, A
+		WinSet, Style, +0xC00000, A
+	} ELSE IF (a_thismenu == "preset") {
+		IF (a_thismenuitem == "Size 1") {
 			s1()
-		} ELSE IF (a_thismenuitem == "size 2"){
+		} ELSE IF (a_thismenuitem == "Size 2"){
 			s2()
-		} ELSE IF (a_thismenuitem == "size 3") {
+		} ELSE IF (a_thismenuitem == "Size 3") {
 			s3()
-		} ELSE IF (a_thismenuitem == "center") {
+		} ELSE IF (a_thismenuitem == "Center") {
 			center()
 		}
 	} ELSE IF (a_thismenu == "left") {
