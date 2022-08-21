@@ -7,6 +7,9 @@ Script for resizing and moving windows applications
 - Allows multi monitor setup and will resize or move windows accordingly
 - Center windows on screen
 - 11 size presets
+- Always on top
+- Remove border
+- Show border
 
 # Shortcut keys
 | KEY | Function |
