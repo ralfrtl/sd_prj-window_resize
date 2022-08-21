@@ -14,7 +14,7 @@ Script for resizing and moving windows applications
 # Shortcut keys
 | KEY | Function |
 | ------ | ------ |
-| `win` `left alt` `space` ,<br/>`win` `right click` | Show menu for size options<br/>![image](https://user-images.githubusercontent.com/34419223/163129364-656f8588-3da2-4d17-b8d2-ea7f6396f22e.png)|
+| `win` `left alt` `space` ,<br/>`win` `right click` | Show menu for size options<br/>![image]![image](https://user-images.githubusercontent.com/34419223/185805361-c0e0b96d-f013-4e3d-9ffb-18edf302f650.png)|
 |  `win` `F1` | `size 1` preset |
 |  `win` `F2` | `size 2` preset |
 |  `win` `F3` | `size 3` preset |
